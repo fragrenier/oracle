@@ -39,8 +39,12 @@ default[:oracle][:ora_inventory] = '/opt/oraInventory'
 
 ## Settings specific to the Oracle RDBMS proper.
 default[:oracle][:rdbms][:dbbin_version] = '11g'
-default[:oracle][:rdbms][:ora_home] = "#{node[:oracle][:ora_base]}/11R23"
-default[:oracle][:rdbms][:ora_home_12c] = "#{node[:oracle][:ora_base]}/12R1"
+default[:oracle][:rdbms][:ora_version] = '11.2.0.3'
+default[:oracle][:rdbms][:ora_version_12c] = '12.1.0.1'
+default[:oracle][:rdbms][:ofa_subdir] = "product/#{node[:oracle][:rdbms][:ora_version]}/dbhome_1"
+default[:oracle][:rdbms][:ofa_subdir_12c] = "product/#{node[:oracle][:rdbms][:ora_version_12c]}/dbhome_1"
+default[:oracle][:rdbms][:ora_home] = "#{node[:oracle][:ora_base]}/#{node[:oracle][:rdbms][:ofa_subdir]}"
+default[:oracle][:rdbms][:ora_home_12c] = "#{node[:oracle][:ora_base]}/#{node[:oracle][:rdbms][:ofa_subdir_12c]}"
 default[:oracle][:rdbms][:is_installed] = false
 default[:oracle][:rdbms][:install_info] = {}
 default[:oracle][:rdbms][:install_dir] = "#{node[:oracle][:ora_base]}/install_dir"
@@ -48,7 +52,9 @@ default[:oracle][:rdbms][:response_file_url] = ''
 default[:oracle][:rdbms][:db_create_template] = 'default_template.dbt'
 
 ## Settings specific to the Oracle Client proper.
-default[:oracle][:client][:ora_home] = "#{node[:oracle][:ora_base]}/11R23cli"
+default[:oracle][:client][:ora_version] = '11.2.0.3'
+default[:oracle][:client][:ofa_subdir] = "product/#{node[:oracle][:client][:ora_version]}/client"
+default[:oracle][:client][:ora_home] = "#{node[:oracle][:ora_base]}/#{node[:oracle][:client][:ofa_subdir]}"
 default[:oracle][:client][:is_installed] = false
 default[:oracle][:client][:install_info] = {}
 default[:oracle][:client][:install_dir] = "#{node[:oracle][:ora_base]}/install_dir_client"

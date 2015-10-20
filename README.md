@@ -296,8 +296,12 @@ Attributes under `:rdbms` relate to the Oracle RDBMS proper,
 rather unsurprisingly:
 
 * `node[:oracle][:rdbms][:dbbin_version]` - selection for 12c.
+* `node[:oracle][:rdbms][:ora_version]` - selection for software version,
+  default is `11.2.0.3`.
+* `node[:oracle][:rdbms][:ofa_subdir]` - selection for a subdirectory name
+  compliant with OFA. Defaults to `product/#{node[:oracle][:rdbms][:ora_version]}/dbhome_1`
 * `node[:oracle][:rdbms][:ora_home]` - sets the oracle home's absolute
-  pathname; defaults to  `#{node[:oracle][:ora_base]}/11R23`.
+  pathname; defaults to  `#{node[:oracle][:ora_base]}/#{node[:oracle][:rdbms][:ofa_subdir]}`.
 * `node[:oracle][:rdbms][:is_installed]` - flag to indicate whether
   the dbbin recipe has installed the RDBMS, and can thus be skipped.
 * `node[:oracle][:rdbms][:install_info]` - a Hash storing information
@@ -356,8 +360,12 @@ rather unsurprisingly:
 Attributes under `:client` relate to the Oracle Client proper,
 rather unsurprisingly:
 
+* `node[:oracle][:client][:ora_version]` - selection for software version,
+  default is `11.2.0.3`.
+* `node[:oracle][:client][:ofa_subdir]` - selection for a subdirectory name
+  compliant with OFA. Defaults to `product/#{node[:oracle][:client][:ora_version]}/client`
 * `node[:oracle][:client][:ora_home]` - sets the oracli home's absolute
-  pathname; defaults to  `#{node[:oracle][:ora_base]}/11R23cli`.
+  pathname; defaults to  `#{node[:oracle][:ora_base]}/#{node[:oracle][:client][:ofa_subdir]}`.
 * `node[:oracle][:client][:is_installed]` - flag to indicate whether
   the clibin recipe has installed the client, and can thus be skipped.
 * `node[:oracle][:client][:install_info]` - a Hash storing information
