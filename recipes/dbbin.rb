@@ -60,7 +60,7 @@ node[:oracle][:rdbms][:install_files].each do |zip_file|
   end
 
   execute "unzip_oracle_media_#{zip_file}" do
-    command "unzip #{File.basename(zip_file)}"
+    command "unzip -o #{File.basename(zip_file)}"
     user "oracle"
     group 'oinstall'
     cwd node[:oracle][:rdbms][:install_dir]

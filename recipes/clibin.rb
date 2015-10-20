@@ -53,7 +53,7 @@ node[:oracle][:client][:install_files].each do |zip_file|
   end
 
   execute "unzip_media_11R23cli-#{zip_file}" do
-    command "unzip #{File.basename(zip_file)}"
+    command "unzip -o #{File.basename(zip_file)}"
     user "oracli"
     group 'oracli'
     cwd node[:oracle][:client][:install_dir]
