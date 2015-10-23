@@ -31,8 +31,8 @@ end
 # Creating $ORACLE_BASE and the install directory.
 [node[:oracle][:ora_base], node[:oracle][:client][:install_dir]].each do |dir|
   directory dir do
-    owner 'oracli'
-    group 'oracli'
+    owner node[:oracle][:cliuser][:edb]
+    group node[:oracle][:cliuser][:ora_cli_grp]
     mode '0755'
     action :create
   end
@@ -47,36 +47,36 @@ yum_package 'unzip'
 node[:oracle][:client][:install_files].each do |zip_file|
   execute "fetch_media_11R23cli-#{zip_file}" do
     command "curl -kO #{zip_file}"
-    user "oracli"
-    group 'oracli'
+    user node[:oracle][:cliuser][:edb]
+    group node[:oracle][:cliuser][:ora_cli_grp]
     cwd node[:oracle][:client][:install_dir]
   end
 
   execute "unzip_media_11R23cli-#{zip_file}" do
     command "unzip -o #{File.basename(zip_file)}"
-    user "oracli"
-    group 'oracli'
+    user node[:oracle][:cliuser][:edb]
+    group node[:oracle][:cliuser][:ora_cli_grp]
     cwd node[:oracle][:client][:install_dir]
   end
 
 # Fixed a compile error while installing the client
   execute "sed_client_cvu_config" do
     command "sed -i.bak 's/OEL4/OEL6/' cvu_config"
-    user "oracli"
-    group 'oracli'
+    user node[:oracle][:cliuser][:edb]
+    group node[:oracle][:cliuser][:ora_cli_grp]
     cwd "#{node[:oracle][:client][:install_dir]}/client/stage/cvu/cv/admin"
   end
 end
 
 # This oraInst.loc specifies the standard oraInventory location.
 file "#{node[:oracle][:ora_base]}/oraInst.loc" do
-  owner "oracli"
+  owner node[:oracle][:cliuser][:edb]
   group 'oinstall'
   content "inst_group=oinstall\ninventory_loc=#{node[:oracle][:ora_inventory]}"
 end
 
 directory node[:oracle][:ora_inventory] do
-  owner 'oracli'
+  owner node[:oracle][:cliuser][:edb]
   group 'oinstall'
   mode '0755'
   action :create
@@ -84,8 +84,8 @@ end
 
 # Filesystem template.
 template "#{node[:oracle][:client][:install_dir]}/cli11R23.rsp" do
-  owner 'oracli'
-  group 'oracli'
+  owner node[:oracle][:cliuser][:edb]
+  group node[:oracle][:cliuser][:ora_cli_grp]
   mode '0644'
 end
 
@@ -97,7 +97,7 @@ end
 bash 'run_client_installer' do
   cwd "#{node[:oracle][:client][:install_dir]}/client"
   environment (node[:oracle][:client][:env])
-  code "sudo -Eu oracli ./runInstaller -showProgress -silent -waitforcompletion -ignoreSysPrereqs -responseFile #{node[:oracle][:client][:install_dir]}/cli11R23.rsp -invPtrLoc #{node[:oracle][:ora_base]}/oraInst.loc"
+  code "sudo -Eu #{node[:oracle][:cliuser][:edb]} ./runInstaller -showProgress -silent -waitforcompletion -ignoreSysPrereqs -responseFile #{node[:oracle][:client][:install_dir]}/cli11R23.rsp -invPtrLoc #{node[:oracle][:ora_base]}/oraInst.loc"
   returns [0, 6]
 end
 
@@ -109,7 +109,7 @@ execute 'install_dir_cleanup' do
   command "rm -rf #{node[:oracle][:client][:install_dir]}/*"
 end
 
-# Set a flag to indicate the rdbms has been successfully installed.
+# Set a flag to indicate the client has been successfully installed.
 ruby_block 'set_client_install_flag' do
   block do
     node.set[:oracle][:client][:is_installed] = true
@@ -120,14 +120,14 @@ end
 # Creating the tnsnames.ora file. Modify it accordingly to the
 # target database.
 cookbook_file "#{node[:oracle][:client][:ora_home]}/network/admin/tnsnames.ora" do
-  owner 'oracli'
-  group 'oracli'
+  owner node[:oracle][:cliuser][:edb]
+  group node[:oracle][:cliuser][:ora_cli_grp]
   mode '0644'
 end
 
 # Install sqlplus startup config file.
 cookbook_file "#{node[:oracle][:client][:ora_home]}/sqlplus/admin/glogin.sql" do
-  owner 'oracli'
-  group 'oracli'
+  owner node[:oracle][:cliuser][:edb]
+  group node[:oracle][:cliuser][:ora_cli_grp]
   mode '0644'
 end

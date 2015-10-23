@@ -17,14 +17,13 @@
 ## Install latest patch for Oracle Client.
 #
 
-
 unless node[:oracle][:client][:latest_patch][:is_installed]
 
   # Fetching the latest 11.2.0.3.0 patch media with curl.
   # We use curl instead of wget because the latter caused Chef Client's
   # Memory usage to balloon until the OS killed it.
   bash 'fetch_latest_patch_media_11R23' do
-    user "oracli"
+    user node[:oracle][:cliuser][:edb]
     group 'oinstall'
     cwd node[:oracle][:client][:install_dir]
     code <<-EOH
@@ -36,8 +35,8 @@ unless node[:oracle][:client][:latest_patch][:is_installed]
 
   # Setting up OPatch.
   bash 'patch_client_opatch' do
-    user 'oracli'
-    group 'oracli'
+    user node[:oracle][:cliuser][:edb]
+    group node[:oracle][:cliuser][:ora_cli_grp]
     cwd node[:oracle][:client][:ora_home]
     code <<-EOH3
     rm -rf OPatch.OLD
@@ -50,22 +49,22 @@ unless node[:oracle][:client][:latest_patch][:is_installed]
   if !node[:oracle][:client][:response_file_url].empty?
     execute "fetch_response_file" do
       command "curl -kO #{node[:oracle][:client][:response_file_url]}"
-      user "oracli"
-      group 'oracli'
+      user node[:oracle][:cliuser][:edb]
+      group node[:oracle][:cliuser][:ora_cli_grp]
       cwd node[:oracle][:client][:install_dir]
     end
   else
     execute 'gen_response_file' do
       command "echo | ./OPatch/ocm/bin/emocmrsp -output ./ocm.rsp foo bar && chmod 0644 ./ocm.rsp"
-      user "oracli"
-      group 'oracli'
+      user node[:oracle][:cliuser][:edb]
+      group node[:oracle][:cliuser][:ora_cli_grp]
       cwd node[:oracle][:client][:ora_home]
     end
   end
 
   # Apply latest patch.
   bash 'apply_latest_patch_client' do
-    user "oracli"
+    user node[:oracle][:cliuser][:edb]
     group 'oinstall'
     cwd "#{node[:oracle][:client][:install_dir]}/#{node[:oracle][:client][:latest_patch][:dirname]}"
     environment (node[:oracle][:client][:env])
@@ -74,7 +73,7 @@ unless node[:oracle][:client][:latest_patch][:is_installed]
     notifies :create, "ruby_block[set_client_version_attr]", :immediately
   end
   
-  # Set the rdbms version attribute.
+  # Set the client version attribute.
   include_recipe 'oracle::get_cli_version'
     
   # Set flag indicating latest patch has been applied.
