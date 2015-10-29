@@ -117,14 +117,6 @@ ruby_block 'set_client_install_flag' do
   action :create
 end
 
-# Creating the tnsnames.ora file. Modify it accordingly to the
-# target database.
-cookbook_file "#{node[:oracle][:client][:ora_home]}/network/admin/tnsnames.ora" do
-  owner node[:oracle][:cliuser][:edb]
-  group node[:oracle][:cliuser][:ora_cli_grp]
-  mode '0644'
-end
-
 # Install sqlplus startup config file.
 cookbook_file "#{node[:oracle][:client][:ora_home]}/sqlplus/admin/glogin.sql" do
   owner node[:oracle][:cliuser][:edb]

@@ -140,3 +140,6 @@ default[:oracle][:rdbms][:dbconsole][:emconfig] = true
 default[:oracle][:rdbms][:dbconsole][:sysman_pw] = 'sysman_pw_goes_here'
 default[:oracle][:rdbms][:dbconsole][:notification_email] = 'foo@bar.inet'
 default[:oracle][:rdbms][:dbconsole][:outgoing_mail] = 'mailhost'
+
+# Default attributes for tnsnames.ora on Oracle client installation.
+default[:oracle][:tnsnames] = []

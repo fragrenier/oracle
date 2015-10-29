@@ -1,0 +1,17 @@
+# tnsnames.ora Network Configuration File: <%= @filename %>
+
+<% @tnsnames_entry.each do |n| %>
+<%= n.name %> =
+  (DESCRIPTION =
+   (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)
+                 (HOST = <%= n.host %>)
+                 (PORT = <%= n.port %>)
+      )
+    )
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = <%= n.service_name %>)
+    )
+  )
+<% end %>
