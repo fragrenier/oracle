@@ -428,6 +428,7 @@ Includes 5 recipes, which are, in order:
 * `oracle::kernel_params`
 * `oracle::clibin` unless `node[:oracle][:client][:is_installed]`'s value is `true`.
 * `oracle::cli_latest_patch` unless `node[:oracle][:client][:latest_patch][:is_installed]`'s value is `true`.
+* `oracle::tnsnames_cli`
 
 IOW, we set up the oracli user, install Oracle's dependencies, tweak
 the kernel's parameters, then install the Oracle Client binaries (unless
@@ -538,6 +539,12 @@ Also remember to update OPatch 6880880 to the latest version.
 
 Previous or new PSU patches should work without many changes. 11.2.0.3.4,
 11.2.0.3.7, 11.2.0.3.8 and 11.2.0.3.10 worked fine in our environment.
+
+## `tnsnames_cli`
+
+Create or update the tnsnames.ora file for Oracle Client installation.
+TNS entries are controlled by `node[:oracle][:tnsnames]` and `tnsnames.ora.erb` template.
+You can define the entry name and values for host, port and service_name.
 
 ## `get_version`
 
