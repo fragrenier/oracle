@@ -55,7 +55,6 @@ default[:oracle][:rdbms][:db_create_template] = 'default_template.dbt'
 default[:oracle][:client][:ora_version] = '11.2.0.3'
 default[:oracle][:client][:ofa_subdir] = "product/#{node[:oracle][:client][:ora_version]}/client"
 default[:oracle][:client][:ora_home] = "#{node[:oracle][:ora_base]}/#{node[:oracle][:client][:ofa_subdir]}"
-default[:oracle][:client][:is_installed] = false
 default[:oracle][:client][:install_info] = {}
 default[:oracle][:client][:install_dir] = "#{node[:oracle][:ora_base]}/install_dir_client"
 default[:oracle][:client][:response_file_url] = ''
@@ -97,7 +96,7 @@ default[:oracle][:client][:env] = {'ORACLE_BASE' => node[:oracle][:ora_base],
                                   'PATH' => "/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/sbin:#{node[:oracle][:ora_base]}/dba/bin:#{node[:oracle][:client][:ora_home]}/bin:#{node[:oracle][:client][:ora_home]}/OPatch"}
 
 # Install media file for the Oracle Client
-default[:oracle][:client][:install_files] = ['https://https-server.example.localdomain/path/to/p10404530_112030_Linux-x86-64_4of7.zip']
+default[:oracle][:client][:install_files] = 'https://https-server.example.localdomain/path/to/p10404530_112030_Linux-x86-64_4of7.zip'
 
 # Passwords set by createdb.rb for the default open database users.
 # By order of appearance, those are: SYS, SYSTEM and DBSNMP.

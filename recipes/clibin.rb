@@ -44,29 +44,31 @@ yum_package 'unzip'
 # Fetching the install media with curl and unzipping them.
 # We run two resources to avoid chef-client's runaway memory usage resulting
 # in the kernel killing it.
-node[:oracle][:client][:install_files].each do |zip_file|
-  execute "fetch_media_11R23cli-#{zip_file}" do
-    command "curl -kO #{zip_file}"
-    user node[:oracle][:cliuser][:edb]
-    group node[:oracle][:cliuser][:ora_cli_grp]
-    cwd node[:oracle][:client][:install_dir]
-  end
+zip_file = node[:oracle][:client][:install_files]
 
-  execute "unzip_media_11R23cli-#{zip_file}" do
-    command "unzip -o #{File.basename(zip_file)}"
-    user node[:oracle][:cliuser][:edb]
-    group node[:oracle][:cliuser][:ora_cli_grp]
-    cwd node[:oracle][:client][:install_dir]
-  end
+execute "fetch_media_cli-#{zip_file}" do
+  command "curl -kO #{zip_file}"
+  user node[:oracle][:cliuser][:edb]
+  group node[:oracle][:cliuser][:ora_cli_grp]
+  cwd node[:oracle][:client][:install_dir]
+  not_if { File.exist?(File.join(node[:oracle][:client][:install_dir], zip_file)) }
+end
+
+execute "unzip_media_cli-#{zip_file}" do
+  command "unzip -o #{File.basename(zip_file)}"
+  user node[:oracle][:cliuser][:edb]
+  group node[:oracle][:cliuser][:ora_cli_grp]
+  cwd node[:oracle][:client][:install_dir]
+end
 
 # Fixed a compile error while installing the client
-  execute "sed_client_cvu_config" do
-    command "sed -i.bak 's/OEL4/OEL6/' cvu_config"
-    user node[:oracle][:cliuser][:edb]
-    group node[:oracle][:cliuser][:ora_cli_grp]
-    cwd "#{node[:oracle][:client][:install_dir]}/client/stage/cvu/cv/admin"
-  end
+execute "sed_client_cvu_config" do
+  command "sed -i.bak 's/OEL4/OEL6/' cvu_config"
+  user node[:oracle][:cliuser][:edb]
+  group node[:oracle][:cliuser][:ora_cli_grp]
+  cwd "#{node[:oracle][:client][:install_dir]}/client/stage/cvu/cv/admin"
 end
+
 
 # This oraInst.loc specifies the standard oraInventory location.
 file "#{node[:oracle][:ora_base]}/oraInst.loc" do
@@ -107,14 +109,6 @@ end
 
 execute 'install_dir_cleanup' do
   command "rm -rf #{node[:oracle][:client][:install_dir]}/*"
-end
-
-# Set a flag to indicate the client has been successfully installed.
-ruby_block 'set_client_install_flag' do
-  block do
-    node.set[:oracle][:client][:is_installed] = true
-  end
-  action :create
 end
 
 # Install sqlplus startup config file.

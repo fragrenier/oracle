@@ -27,7 +27,9 @@ include_recipe 'oracle::deps_cli_install'
 include_recipe 'oracle::kernel_params'
 
 # Baseline install for Oracle client + latest patch.
-include_recipe 'oracle::clibin' unless node[:oracle][:client][:is_installed]
+unless Dir.exist? "#{node[:oracle][:client][:ora_home]}"
+  include_recipe 'oracle::clibin'
+end
 include_recipe 'oracle::cli_latest_patch' unless node[:oracle][:client][:latest_patch][:is_installed]
 
 # Set up tnsnames.ora

@@ -106,6 +106,13 @@ Quickstart (client)
         run_list 'recipe[oracle::oracli]'
         override_attributes :oracle => {:client => {:latest_patch => {:url => 'https://secure.server.localdomain/path/to/p16619892_112030_Linux-x86-64.zip'}, :opatch_update_url => 'https://secure.server.localdomain/path/to/p6880880_112000_Linux-x86-64.zip', :install_files => ['https://secure.server.localdomain/path/to/p10404530_112030_Linux-x86-64_4of7.zip']}} 
 
+* You may install different client versions (11.2.0.3, 11.2.0.4). Control the version you want to install
+  by the following attributes:
+        node[:oracle][:client][:ora_version]
+        node[:oracle][:client][:install_files]
+  Once a version is installed it won't be deinstalled if you change the version number in your role.
+  ORACLE_HOME and LD_LIBRARY_PATH variables in oracle's `.profile` are set according to the last installed version.
+
 * You need to set up an encrypted data bag item to secure the oracli
   user's password. See Opscode's docs site for details on encrypted
   data bags:
@@ -365,9 +372,9 @@ rather unsurprisingly:
 * `node[:oracle][:client][:ofa_subdir]` - selection for a subdirectory name
   compliant with OFA. Defaults to `product/#{node[:oracle][:client][:ora_version]}/client`
 * `node[:oracle][:client][:ora_home]` - sets the oracli home's absolute
-  pathname; defaults to  `#{node[:oracle][:ora_base]}/#{node[:oracle][:client][:ofa_subdir]}`.
-* `node[:oracle][:client][:is_installed]` - flag to indicate whether
-  the clibin recipe has installed the client, and can thus be skipped.
+  pathname; defaults to `#{node[:oracle][:ora_base]}/#{node[:oracle][:client][:ofa_subdir]}`.
+  This directory is also checked to know whether the clibin recipe has installed the client, 
+  and can thus be skipped.
 * `node[:oracle][:client][:install_info]` - a Hash storing information
   about the client installed on the node (version, patch number, and
   timestamp of last patching); defaults to the empty Hash. See the
@@ -382,8 +389,8 @@ rather unsurprisingly:
   of the Oracle RDBMS' and Oracle Client' dependencies.
 * `node[:oracle][:client][:env]` - a Hash of variable names/values that
   makes up the RDBMS-specific environment for the oracle user.</br>
-* `node[:oracle][:client][:install_files]` - an Array of URLs that
-  specify the locations of the Oracle Client' installation files:
+* `node[:oracle][:client][:install_files]` - URL that specify the location
+  of the Oracle Client installation file for the default version 11.2.0.3:
   `p10404530_112030_Linux-x86-64_4of7.zip`.
 * `node[:oracle][:client][:opatch_update_url]` - sets the URL of the
   OPatch update (`p6880880_112000_Linux-x86-64.zip)`.
@@ -426,7 +433,7 @@ Includes 5 recipes, which are, in order:
 * `oracle::oracli_user_config`
 * `oracle::deps_cli_install`
 * `oracle::kernel_params`
-* `oracle::clibin` unless `node[:oracle][:client][:is_installed]`'s value is `true`.
+* `oracle::clibin` unless directory `node[:oracle][:client][:ora_home]` is existing.
 * `oracle::cli_latest_patch` unless `node[:oracle][:client][:latest_patch][:is_installed]`'s value is `true`.
 * `oracle::tnsnames_cli`
 
@@ -514,9 +521,8 @@ they will override the values.
 
 ## `clibin`
 
-Installs Oracle Client binaries. The install files are specified as
-an Array of URLs that's the value of the `node[:oracle][:client][:install_files]`
-attribute.
+Installs Oracle Client binaries. The install file is specified as
+an URL stored in `node[:oracle][:client][:install_files]` attribute.
 
 **Note:** If you use the `ora_cli_quickstart` role, it will override the values.
 

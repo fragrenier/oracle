@@ -49,7 +49,7 @@ node[:oracle][:cliuser][:sup_grps].each_key do |grp|
 end
 
 template "/home/#{node[:oracle][:cliuser][:edb]}/.profile" do
-  action :create_if_missing
+  action :create
   source 'oracli_profile.erb'
   owner node[:oracle][:cliuser][:edb]
   group node[:oracle][:cliuser][:ora_cli_grp]
