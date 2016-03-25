@@ -559,7 +559,7 @@ The template tnsnames.ora.erb uses the following attributes (replace TNS_ENTRY b
 
 * `node[:oracle][:tnsnames][:TNS_ENTRY][:failover]` - It should be 'ON' or 'OFF' for RAC setting (can be omitted).
 * `node[:oracle][:tnsnames][:TNS_ENTRY][:load_balance]` - It should be 'ON' or 'OFF' for RAC setting (can be omitted).
-* `node[:oracle][:tnsnames][:TNS_ENTRY][:hosts_list]` - Hosts, separated by comma for RAC setting.
+* `node[:oracle][:tnsnames][:TNS_ENTRY][:host]` - Hosts, separated by comma for RAC setting.
 * `node[:oracle][:tnsnames][:TNS_ENTRY][:port]` - Port number (same port in case of multiple hosts).
 * `node[:oracle][:tnsnames][:TNS_ENTRY][:service_name]` - Service Name obviously.
 

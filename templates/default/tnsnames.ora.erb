@@ -13,7 +13,7 @@
     <% end %>
   <% end %>
     (ADDRESS_LIST =
-  <% config['hosts_list'].split(',').each do |address| %>
+  <% config['host'].split(',').each do |address| %>
       (ADDRESS = (PROTOCOL = TCP)(HOST = <%= address.strip %>)(PORT = <%= config.port %>))
   <% end %>
     )
