@@ -142,3 +142,5 @@ default[:oracle][:rdbms][:dbconsole][:outgoing_mail] = 'mailhost'
 
 # Default attributes for tnsnames.ora on Oracle client installation.
 default[:oracle][:tnsnames] = []
+# Default attribute for handling client tnsnames.ora for RAC instances.
+default[:oracle][:rac_tnsnames] = false

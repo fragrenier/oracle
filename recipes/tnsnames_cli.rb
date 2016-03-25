@@ -25,6 +25,7 @@ template "#{node[:oracle][:client][:ora_home]}/network/admin/tnsnames.ora" do
   mode '0644'
   variables(
     filename: path,
-    tnsnames_entry: node[:oracle][:tnsnames]
+    tnsnames_entry: node[:oracle][:tnsnames],
+    rac: node[:oracle][:rac_tnsnames]
   )
 end

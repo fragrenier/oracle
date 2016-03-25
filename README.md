@@ -550,7 +550,18 @@ Previous or new PSU patches should work without many changes. 11.2.0.3.4,
 
 Create or update the tnsnames.ora file for Oracle Client installation.
 TNS entries are controlled by `node[:oracle][:tnsnames]` and `tnsnames.ora.erb` template.
-You can define the entry name and values for host, port and service_name.
+
+You can define the entry name and values for hosts, port and service_name.
+
+For client using RAC instances, the attribute `node[:oracle][:rac_tnsnames]` should be set to true so that it can manage FAILOVER and LOAD_BALANCE properties.
+
+The template tnsnames.ora.erb uses the following attributes (replace TNS_ENTRY by your own entry):
+
+* `node[:oracle][:tnsnames][:TNS_ENTRY][:failover]` - It should be 'ON' or 'OFF' for RAC setting (can be omitted).
+* `node[:oracle][:tnsnames][:TNS_ENTRY][:load_balance]` - It should be 'ON' or 'OFF' for RAC setting (can be omitted).
+* `node[:oracle][:tnsnames][:TNS_ENTRY][:hosts_list]` - Hosts, separated by comma for RAC setting.
+* `node[:oracle][:tnsnames][:TNS_ENTRY][:port]` - Port number (same port in case of multiple hosts).
+* `node[:oracle][:tnsnames][:TNS_ENTRY][:service_name]` - Service Name obviously.
 
 ## `get_version`
 

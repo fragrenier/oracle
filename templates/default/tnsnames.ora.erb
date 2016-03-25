@@ -4,11 +4,18 @@
 <% @tnsnames_entry.each do |name, config| %>
 <%= name %> =
   (DESCRIPTION =
-   (ADDRESS_LIST =
-      (ADDRESS = (PROTOCOL = TCP)
-                 (HOST = <%= config.host %>)
-                 (PORT = <%= config.port %>)
-      )
+  <% if @rac %>
+    <% if config.has_key?('failover') %>
+    (FAILOVER = <%= config.failover %>)
+    <% end %>
+    <% if config.has_key?('load_balance') %>
+    (LOAD_BALANCE = <%= config.load_balance %>)
+    <% end %>
+  <% end %>
+    (ADDRESS_LIST =
+  <% config['hosts_list'].split(',').each do |address| %>
+      (ADDRESS = (PROTOCOL = TCP)(HOST = <%= address.strip %>)(PORT = <%= config.port %>))
+  <% end %>
     )
     (CONNECT_DATA =
       (SERVER = DEDICATED)
